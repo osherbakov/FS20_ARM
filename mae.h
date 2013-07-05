@@ -22,8 +22,8 @@
 // Some of the have fixed number of parameters, some of them not.
 // The common thing for all is that all of them take a state pointer as the first parameter.
 typedef int BLOCK_PROCESS(void *, ... );
-typedef void MODULE_PROCESS(void *, int Msg, int Param1, int Param2);
-typedef void DRIVER_PROCESS(void *, int Msg, int Param1, int Param2);
+typedef void MODULE_PROCESS(void *, uint16_t Msg, uint16_t Param1, uint32_t Param2);
+typedef void DRIVER_PROCESS(void *, uint16_t Msg, uint16_t Param1, uint32_t Param2);
 typedef void ISR_PROCESS(void *);
 
 
@@ -59,8 +59,8 @@ typedef struct mae_stream_descriptor
 // Block descriptor - the structure that will fully describe ins- and outs- of particular Block  
 typedef struct block_descriptor 
 {
-	uint32_t				unique_id;		// Block unique number
-	uint32_t 				n_streams;		// Number of input/output buffer streams
+	uint16_t				unique_id;		// Block unique number
+	uint16_t 				n_streams;		// Number of input/output buffer streams
 	uint32_t 				n_data_bytes;	// Number of data bytes needed for state data
 	BLOCK_PROCESS			*p_process;		// Main block data-processing function
 	mae_stream_descriptor_t	*p_streams;		// Specifies the number and type of input/output streams
@@ -69,8 +69,8 @@ typedef struct block_descriptor
 // Module descriptor - the structure that will fully describe ins- and outs- of particular Module
 typedef struct module_descriptor
 {
-	uint32_t				unique_id;		// Module unique number
-	uint32_t				n_streams;		// Number of input/output streams
+	uint16_t				unique_id;		// Module unique number
+	uint16_t				n_streams;		// Number of input/output streams
 	uint32_t 				n_data_bytes;	// Number of data bytes needed for state data
 	MODULE_PROCESS			*p_process;		// Main message processing function for the module
 	mae_stream_descriptor_t	*p_streams;		// Specifies the number and type of input/output streams
@@ -79,8 +79,8 @@ typedef struct module_descriptor
 // Driver descriptor - the structure that will fully describe ins- and outs- of particular Driver  
 typedef struct driver_descriptor 
 {
-	uint32_t				unique_id;		// Driver unique number
-	uint32_t				n_streams;		// Number of input/output streams
+	uint16_t				unique_id;		// Driver unique number
+	uint16_t				n_streams;		// Number of input/output streams
 	uint32_t 				n_data_bytes;	// Number of data bytes needed for state data
 	DRIVER_PROCESS			*p_process;		// Main message processing function for the driver 
 	mae_stream_descriptor_t	*p_streams;		// Specifies the number and type of input/output streams
@@ -94,29 +94,29 @@ typedef struct driver_descriptor
 // pointers in drivers and modules.
 
 typedef int REGISTER_BLOCK (block_descriptor_t *p_d);
-typedef int REGISTER_DRIVER (int driver_num, driver_descriptor_t *p_d);
-typedef int REGISTER_CONNECTION (int n_src_num, int n_src_queue, int n_dest_num, int n_dest_queue, int min_buffer);
-typedef int REGISTER_BUS (int n_src_num, int src_bus, int n_dest_num, int  dest_bus, int min_buffer);
+typedef int REGISTER_DRIVER (unsigned int driver_num, driver_descriptor_t *p_d);
+typedef int REGISTER_CONNECTION (unsigned int n_src_num, unsigned int n_src_queue, unsigned int n_dest_num, unsigned int n_dest_queue, int min_buffer);
+typedef int REGISTER_BUS (unsigned int n_src_num, unsigned int src_bus, unsigned int n_dest_num, unsigned int  dest_bus, int min_buffer);
 typedef int REGISTER_QUEUE(mae_queue_entry_t *src_queue, mae_queue_entry_t *dest_queue, int min_buffer);
 
-typedef int UNREGISTER_DRIVER (int driver_num);
+typedef int UNREGISTER_DRIVER (unsigned int driver_num);
 
-typedef void *GET_DRIVER_STATE (int driver_num);
+typedef void *GET_DRIVER_STATE (unsigned int driver_num);
 
 typedef mae_queue_entry_t *CREATE_QUEUE(mae_stream_descriptor_t *p_descriptor);
 
-typedef int ADD_INPUT_QUEUE(int driver_num, mae_queue_entry_t *queue);
-typedef int ADD_OUTPUT_QUEUE(int driver_num, mae_queue_entry_t *queue);
+typedef int ADD_INPUT_QUEUE(unsigned int driver_num, mae_queue_entry_t *queue);
+typedef int ADD_OUTPUT_QUEUE(unsigned int driver_num, mae_queue_entry_t *queue);
 
 
-typedef int COUNT_INPUT_QUEUES(int driver_num);
-typedef int COUNT_OUTPUT_QUEUES(int driver_num);
+typedef int COUNT_INPUT_QUEUES(unsigned int driver_num);
+typedef int COUNT_OUTPUT_QUEUES(unsigned int driver_num);
 
-typedef mae_queue_entry_t *GET_INPUT_QUEUES(int driver_num);
-typedef mae_queue_entry_t *GET_OUTPUT_QUEUES(int driver_num);
+typedef mae_queue_entry_t *GET_INPUT_QUEUES(unsigned int driver_num);
+typedef mae_queue_entry_t *GET_OUTPUT_QUEUES(unsigned int driver_num);
 
-typedef mae_queue_t *GET_INPUT_QUEUE(int driver_num, int queue_num);
-typedef mae_queue_t *GET_OUTPUT_QUEUE(int driver_num, int queue_num);
+typedef mae_queue_t *GET_INPUT_QUEUE(unsigned int driver_num, unsigned int queue_num);
+typedef mae_queue_t *GET_OUTPUT_QUEUE(unsigned int driver_num, unsigned int queue_num);
 
 typedef int GET_QUEUE_SIZE(mae_queue_t *p_queue);
 typedef int GET_QUEUE_COUNT(mae_queue_t *p_queue);
@@ -125,23 +125,23 @@ typedef int GET_QUEUE_SPACE(mae_queue_t *p_queue);
 typedef void CLEAR_QUEUE(mae_queue_t *p_queue);
 typedef void FILL_QUEUE(mae_queue_t *p_queue);
 
-typedef int POP_QUEUE(mae_queue_t *p_queue);
-typedef void PUSH_QUEUE(mae_queue_t *p_queue, int data);
+typedef uint32_t POP_QUEUE(mae_queue_t *p_queue);
+typedef void PUSH_QUEUE(mae_queue_t *p_queue, uint32_t data);
 
 typedef void POP_QUEUE_DATA(mae_queue_t *p_queue, void *p_data, int n_elements);
 typedef void PUSH_QUEUE_DATA(mae_queue_t *p_queue, void *p_data, int n_elements);
 
-typedef void POST_MESSAGE(int msg, int param1, int param2);
-typedef void PROCESS_MESSAGE(int module_id, int msg, int param1, int param2);
-typedef void PROCESS_DATA(int block_id);
+typedef void POST_MESSAGE(unsigned int msg, unsigned int param1, uint32_t param2);
+typedef void PROCESS_MESSAGE(unsigned int module_id, unsigned int msg, unsigned int param1, uint32_t param2);
+typedef void PROCESS_DATA(unsigned int block_id);
 
-typedef void *MALLOC(int n_size, int n_alignment);
+typedef void *MALLOC(unsigned int n_size, unsigned int n_alignment);
 typedef void *GET_FREE_MEM_POINTER();
 typedef int GET_FREE_MEM_SIZE();
 
-typedef void AUDIO_ENGINE_INIT(void *heap_start, int depth_msg_queue);
+typedef void AUDIO_ENGINE_INIT(void *heap_start, unsigned int depth_msg_queue);
 typedef void AUDIO_ENGINE_START();
-typedef int AUDIO_ENGINE_CONFIG(int *p_config_data);
+typedef int AUDIO_ENGINE_CONFIG(uint32_t *p_config_data);
 typedef void AUDIO_ENGINE_STOP();
 typedef void AUDIO_ENGINE_CLOSE();
 

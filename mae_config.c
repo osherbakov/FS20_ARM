@@ -26,7 +26,7 @@
 #define IS_PARAMS(a) 	( ((a) & 0xFFFFFF00) == 0x00000200 )
 #define IS_CONFIG(a) 	( ((a) & 0xFFFFFF00) == 0x00000300 )
 #define IS_SYSCONFIG(a) ( ((a) & 0xFFFFFF00) == 0x00000400 )
-#define IS_BUS8(a) 		(  (a) == 0x00000502 )
+#define IS_BUS8(a) 	(  (a) == 0x00000502 )
 #define IS_BUS16(a) 	(  (a) == 0x00000503 )
 #define IS_CONN16(a)	(  (a) == 0x00000602 )
 #define IS_CONN32(a)	(  (a) == 0x00000603 )
@@ -42,7 +42,7 @@
 
 #define IS_ANY_DRIVER(a) 	( IS_DRIVER8(a) || IS_DRIVER16(a) || IS_DRIVER8_P(a) || IS_DRIVER16_P(a) )
 #define IS_ANY_BUS(a) 		(IS_BUS8(a) || IS_BUS16(a))
-#define IS_ANY_CONNECTION(a)(IS_CONN8(a) || IS_CONN16(a) || IS_CONN32(a))
+#define IS_ANY_CONNECTION(a)    (IS_CONN8(a) || IS_CONN16(a) || IS_CONN32(a))
 
 #define IS_END(a) 		( ((a) == 0x00000000) || (~(a) == 0x00000000) )
 
@@ -53,7 +53,7 @@
 
 #define WORD_SIZE(a)	( (a) & 0x000000FF )
 
-int mae_audio_engine_config(int *p_config_data)
+int mae_audio_engine_config(uint32_t *p_config_data)
 {
 	// Start parsing the configuration data
 	// The rules are as follows:
@@ -130,34 +130,34 @@ int mae_audio_engine_config(int *p_config_data)
 	//		 
 	//
 	unsigned int 	b_done; 
-	unsigned int 	*p_data;
-	unsigned int 	*p_next_data; 
-	unsigned int	data_word;				// Currently fetched data
-	void 			*p_data_heap_start;		// The heap start address
+	uint32_t 	*p_data;
+	uint32_t 	*p_next_data; 
+	uint32_t	data_word;			// Currently fetched data
+	void 		*p_data_heap_start;		// The heap start address
 	unsigned int	n_msg_queue_size;		// Value for MESSAGE QUEUE SIZE
 	
 	driver_descriptor_t	s_driver_desc;	
 	
 	driver_descriptor_t	*p_driver_desc;
 	DRIVER_PROCESS		*p_process;
-	unsigned int		n_driver_id1, n_driver_id2;
+	uint16_t		n_driver_id1, n_driver_id2;
 	unsigned int		n_words;
 	unsigned int		i;
 
-	unsigned int *p_streams;
-	void		 *p_state;
-	unsigned int *p_config;
-	unsigned int *p_params;
+	void	 *p_state;
+	uint32_t   *p_streams;
+	uint32_t *p_config;
+	uint32_t *p_params;
 
-	int 	src_id, 
-			dst_id, 
-			src_pin, 
-			dst_pin;
+	uint16_t src_id, 
+		dst_id, 
+		src_pin, 
+		dst_pin;
 
 	// Check for the null pointer
 	if(0 == p_config_data) return 0;
 
-	p_data = (unsigned int *) p_config_data;
+	p_data = p_config_data;
 	data_word = *p_data;
 	
 	//
@@ -177,7 +177,7 @@ int mae_audio_engine_config(int *p_config_data)
 		{
 			n_msg_queue_size = *p_data++;
 		}
-		p_config_data = (int *) p_data;			// Skip the SYSCONFIG data
+		p_config_data =  p_data;			// Skip the SYSCONFIG data
 		gp_functions_table->p_audio_engine_init(p_data_heap_start, n_msg_queue_size);
 	}
 	
@@ -197,6 +197,7 @@ int mae_audio_engine_config(int *p_config_data)
 		}else if( IS_ANY_DRIVER(data_word))
 		{
 			p_process = 0;						// Initially we don't have any process function
+                        n_driver_id1 = n_driver_id2 = 0;
 			if(IS_DRIVER8(data_word))
 			{	// The new driver is specified
 				n_driver_id1 = ID1(data_word); 
@@ -232,7 +233,7 @@ int mae_audio_engine_config(int *p_config_data)
 			p_driver_desc = 0;			// Initialize the pointer
 			if(p_process) 
 			{
-				p_process(0, MSG_GET_INFO, n_driver_id1, (int) &p_driver_desc);
+				p_process(0, MSG_GET_INFO, n_driver_id1, (uint32_t) &p_driver_desc);
 			}
 			if(p_driver_desc != 0)		// If valid pointer returned - copy the structure
 			{
@@ -303,7 +304,7 @@ int mae_audio_engine_config(int *p_config_data)
 					// We found the CONFIG(N) record - send MSG_CONFIG message
 					if(p_process) 
 					{
-						p_process(p_state, MSG_CONFIGURE, n_driver_id2, (int) p_config);
+						p_process(p_state, MSG_CONFIGURE, n_driver_id2, (uint32_t) p_config);
 					}
 					p_config += n_words;
 					break;
@@ -331,7 +332,7 @@ int mae_audio_engine_config(int *p_config_data)
 					{
 						if(p_process)
 						{
-							p_process(p_state, MSG_SET_PARAM, n_driver_id2, *p_params++);
+							p_process(p_state, MSG_SET_PARAM, n_driver_id2, (uint32_t)*p_params++);
 						}
 					}
 					break;
@@ -345,7 +346,7 @@ int mae_audio_engine_config(int *p_config_data)
 	// Phase 2 - start scan all data records again  
 	//  looking for connection records.
 	//
-	p_data = (unsigned int *) p_config_data;
+	p_data =  p_config_data;
 	b_done = 0;
 	
 	while(!b_done)

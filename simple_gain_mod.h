@@ -13,6 +13,11 @@
 #include "mae.h"
 #include "mxtos.h"
 
+#ifdef __cplusplus
+#define EXTCDECL extern "C"
+#else
+#define EXTCDECL extern 
+#endif
 
 enum 
 {
@@ -31,7 +36,7 @@ enum
 //! function signature is:
 //! void module_process(void *p_state, int msg, int param1, 
 //!                                  int param2)
-extern MODULE_PROCESS simple_gain_mod_process FSPM_ENTRY;
+EXTCDECL MODULE_PROCESS simple_gain_mod_process FSPM_ENTRY;
 
 extern driver_descriptor_t simple_gain_mod_descriptor;
 

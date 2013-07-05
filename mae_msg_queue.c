@@ -71,20 +71,21 @@ int mae_count_msg_queue(void)
 }
 
 //! \brief Routine to get message from the message queue.
-void mae_get_message(int *msg, int *param1, int *param2)
+void mae_get_message(uint16_t *msg, uint16_t *param1, uint32_t *param2)
 {
 	if (gp_mae_msg_queue)
 	{
+                uint32_t data;
 		unsigned int diff;
 		unsigned int saved_ps = ints_off();
-		int *p_buffer =  (int *) gp_mae_msg_queue->p_base;
+		uint32_t *p_buffer =  (uint32_t *) gp_mae_msg_queue->p_base;
 		unsigned int get_index = gp_mae_msg_queue->c_queue.i_get;
 		unsigned int size = gp_mae_msg_queue->c_queue.n_size;
 		unsigned int idx = get_index << 1;	// The index into 64-bit message buffer
 
-		int word = p_buffer[idx];
-		*msg = (word >> 16) & 0xffff;
-		*param1 = word & 0xffff;
+		data = p_buffer[idx];
+		*msg = (data >> 16) & 0xffff;
+		*param1 = data & 0xffff;
 		*param2 = p_buffer[idx + 1];
 
 		get_index++;
@@ -97,7 +98,7 @@ void mae_get_message(int *msg, int *param1, int *param2)
 
 //! void mae_process_message(int module_id, int msg, int param1, int param2)
 //! \brief Routine to process messages in the message queue.
-void mae_process_message(int module_id, int msg, int param1, int param2)
+void mae_process_message(unsigned int module_id, unsigned int msg, unsigned int param1, uint32_t param2)
 {
 	//Get the pointer to driver entry struct which now gives access to all the 
 	//required information.
@@ -110,7 +111,7 @@ void mae_process_message(int module_id, int msg, int param1, int param2)
 //! void mae_post_message (int msg, int param1, int param2)
 //! \brief Routine to post message onto the message queue.
 //! 
-void mae_post_message (int msg, int param1, int param2)
+void mae_post_message (unsigned int msg, unsigned int param1, uint32_t param2)
 {
 	if (gp_mae_msg_queue)
 	{
@@ -120,11 +121,11 @@ void mae_post_message (int msg, int param1, int param2)
 		unsigned int idx;
 
 		unsigned int saved_ps = ints_off();
-		int *p_buffer = (int *) gp_mae_msg_queue->p_base;
+		uint32_t *p_buffer = (uint32_t *) gp_mae_msg_queue->p_base;
 		unsigned int put_index = gp_mae_msg_queue->c_queue.i_put;
 		unsigned int get_index = gp_mae_msg_queue->c_queue.i_get;
 		unsigned int size = gp_mae_msg_queue->c_queue.n_size;
-		int word =  ((msg << 16) | param1);
+		uint32_t data =  ((((uint32_t)msg) << 16) | param1);
 		
 		// Check if the message is already in the queue.
 		// If it is there - do not add
@@ -134,7 +135,7 @@ void mae_post_message (int msg, int param1, int param2)
 		while(lookup_index != put_index )
 		{
 			idx = lookup_index << 1;
-			if( (p_buffer[ idx ] == word) &&
+			if( (p_buffer[ idx ] == data) &&
 				(p_buffer[ idx + 1 ] == param2) )
 			{
 				msg_found = 1;
@@ -148,7 +149,7 @@ void mae_post_message (int msg, int param1, int param2)
 		if( !msg_found)
 		{
 			idx = put_index << 1;	// The index into 64-bit message buffer
-			p_buffer[idx] = word;
+			p_buffer[idx] = data;
 			p_buffer[idx + 1] = param2;
 			put_index++;
 			diff = put_index - size;
@@ -170,7 +171,7 @@ static void mae_broadcast_specific_message(int msg)
 	{
 		p_mae_drivers->p_process(p_mae_drivers->p_state, msg, 
 				p_mae_drivers->drv_number, 
-				(int) &(p_mae_drivers->drv_queues));
+				(uint32_t) &(p_mae_drivers->drv_queues));
 		p_mae_drivers = p_mae_drivers->p_next;
 	}
 }
@@ -179,7 +180,7 @@ static void mae_broadcast_specific_message(int msg)
 //! \brief This function sends an unknown message to all the drivers and modules.
 //! It is used when after reading msg, param1 and param2 using the get_message 
 //! function need to be sent over to all modules and drivers. 
-void mae_broadcast_unknown_message(int msg, int param1, int param2)
+void mae_broadcast_unknown_message(uint16_t msg, uint16_t param1, uint32_t param2)
 {
 	mae_driver_entry_t *p_mae_drivers = gp_mae_drivers;
 	//Send the message to drivers first and then modules
@@ -198,10 +199,11 @@ void mae_broadcast_unknown_message(int msg, int param1, int param2)
 //! checking the messages in the message queue and sends them to all drivers and modules.
 void mae_audio_engine_start()
 {
-	int msg, param1, param2;
+	uint16_t msg, param1;
+        uint32_t param2;
 	
 	// Disable all interrupts
-    g_saved_ps = ints_off();
+      g_saved_ps = ints_off();
 
 	// Initialize the stack pointer - we will never return from mae_audio_engine_start();
 	if(gp_original_stack)	set_stack_pointer(gp_original_stack);
@@ -241,7 +243,7 @@ void mae_audio_engine_stop()
 	exit_processing = 1;	
 }
 
-void mae_audio_engine_init(void *end_bss, int depth_msg_queue)
+void mae_audio_engine_init(void *end_bss, unsigned int depth_msg_queue)
 {
 	ints_init();	// Initialize the syncronization logic (OS-specific)
 	// Disable all interrupts - data buffers will be invalid!!!!!

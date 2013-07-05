@@ -22,7 +22,7 @@ void setup()
 
 	p_ft->p_audio_engine_init(&__heap[0], 64);
 
-	p_ft->p_audio_engine_config((int *)&config[0]);
+	p_ft->p_audio_engine_config(&config[0]);
 	// Never returns from this function - stays in the loop.
 	p_ft->p_audio_engine_start();
 

@@ -45,8 +45,8 @@ typedef struct simple_gain_mod_state {
 //*****************************************************************************
 mae_stream_descriptor_t simple_gain_mod_streams[] =  
 {
-	{INPUT_STREAM, SIZE_16BITS, SIMPLE_GAIN_MOD_BLOCK_SIZE, (int)'AUD','D'}, 
-	{OUTPUT_STREAM, SIZE_16BITS, SIMPLE_GAIN_MOD_BLOCK_SIZE, (int)'AUD','D'}, 
+	{INPUT_STREAM, SIZE_16BITS, SIMPLE_GAIN_MOD_BLOCK_SIZE, (uint32_t)'AUD','D'}, 
+	{OUTPUT_STREAM, SIZE_16BITS, SIMPLE_GAIN_MOD_BLOCK_SIZE, (uint32_t)'AUD','D'}, 
 };
 
 driver_descriptor_t simple_gain_mod_descriptor = 
@@ -66,9 +66,9 @@ driver_descriptor_t simple_gain_mod_descriptor =
 void 
 simple_gain_mod_process(
 			void *p_this,  //!< (i/o) explicit '*this' pointer
-			int msg,       //!< (in) message to process
-			int param1,    //!< (in) message dependent parameter
-			int param2)    //!< (in) message dependent parameter 
+			uint16_t msg,       //!< (in) message to process
+			uint16_t param1,    //!< (in) message dependent parameter
+			uint32_t param2)    //!< (in) message dependent parameter 
 {
 	// Cast a generic "void *" pointer into the module state
 	simple_gain_mod_state_t *p_state = (simple_gain_mod_state_t *) p_this;   
@@ -86,7 +86,7 @@ simple_gain_mod_process(
 			p_state->p_ft = (mae_functions_table_t *) param2;
 			
 			// Initialize the gain to Unity  
-			p_state->volume = (0x02 << 16) | 0x8000;	// Unity gain 
+			p_state->volume = (0x02L << 16) | 0x00008000L;	// Unity gain 
 
 			// Initially enable processing.
 			p_state->enabled = 1;
@@ -140,8 +140,8 @@ simple_gain_mod_process(
 				if(p_state->enabled)
 				{
 					int j;
-					unsigned int 	v_shift = (p_state->volume >> 16) & 0x00FF;
-					int 	v_gain = (p_state->volume & 0x00FFFF);
+					uint32_t 	v_shift = (p_state->volume >> 16) & 0x00FF;
+					uint32_t 	v_gain = (p_state->volume & 0x00FFFF);
 					
 					for( j = 0; j < n_samples; j++ )
 					{

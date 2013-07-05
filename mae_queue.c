@@ -79,7 +79,7 @@ void mae_fill_queue(mae_queue_t *p_queue)
 	ints_restore(saved_ps);
 }
 
-int mae_pop_queue(mae_queue_t *p_queue)
+uint32_t mae_pop_queue(mae_queue_t *p_queue)
 {
     int result = 0;
     int diff;
@@ -120,7 +120,7 @@ int mae_pop_queue(mae_queue_t *p_queue)
     return result;
 }
 
-void mae_push_queue(mae_queue_t *p_queue, int data)
+void mae_push_queue(mae_queue_t *p_queue, uint32_t data)
 {
 	unsigned int saved_ps = ints_off();
 	{

@@ -51,28 +51,28 @@ driver_descriptor_t *(g_mae_drivers[]) =
 //				= 2 - 4-byte (32-bit)
 //				= 3 - 8-byte (64-bit)
 //				= 4 - 16-byte (128-bit)
-void *mae_malloc (int n_size, int n_alignment)
+void *mae_malloc (unsigned int n_size, unsigned int n_alignment)
 {
-	unsigned int n_mem_start = (unsigned int) gp_free_memory;
+	uint32_t n_mem_start = (uint32_t) gp_free_memory;
 if(n_mem_start)
 {
-	unsigned int m_mem_next;
-	unsigned int *p_zero; 
-	unsigned int mask = (1 << n_alignment) - 1;
+	uint32_t m_mem_next;
+	uint32_t *p_zero; 
+	uint32_t mask = (1 << n_alignment) - 1;
 	n_size = (n_size + mask) & ~ mask;
 	n_mem_start = (n_mem_start + mask) & ~mask;
 	m_mem_next = n_mem_start + n_size;
 	gp_free_memory = (void *) m_mem_next;
 	
 	// Now zero out the memory
-	p_zero = (unsigned int *)n_mem_start;
-	while(((unsigned int )p_zero) < m_mem_next)
+	p_zero = (uint32_t *)n_mem_start;
+	while(((uint32_t )p_zero) < m_mem_next)
 	{
 		*p_zero++ = 0;
 	}
 }else
 {
-  n_mem_start = (unsigned int) malloc(n_size);
+  n_mem_start = (uint32_t) malloc(n_size);
   memset((void *)n_mem_start, 0, n_size);
 }
 
@@ -177,7 +177,7 @@ int mae_register_queue(mae_queue_entry_t *src_queue, mae_queue_entry_t *dest_que
 }
 
 
-int mae_register_driver (int driver_num, driver_descriptor_t *p_d)
+int mae_register_driver (unsigned int driver_num, driver_descriptor_t *p_d)
 {
 	unsigned int 			stream_idx;
 	mae_driver_entry_t		*p_new_driver;
@@ -187,7 +187,8 @@ int mae_register_driver (int driver_num, driver_descriptor_t *p_d)
 	mae_driver_entry_t		**pp_drv;
 	mae_queue_entry_t		**pp_iq;
 	mae_queue_entry_t		**pp_oq;
-	int						msg, param1, param2;
+	uint16_t			msg, param1;
+        uint32_t              param2;
 	
 	// Verify that the parameter passed is OK
 	if(!p_d) return -1;
@@ -296,7 +297,7 @@ int mae_register_driver (int driver_num, driver_descriptor_t *p_d)
 	return 0;
 }
 
-int mae_unregister_driver(int driver_num)
+int mae_unregister_driver(unsigned int driver_num)
 {
 	mae_driver_entry_t **pp_drv = &gp_mae_drivers;
 	
@@ -336,9 +337,9 @@ int mae_unregister_driver(int driver_num)
 }
 
 
-int mae_register_connection(int n_src_num, int n_src_queue, int n_dest_num, int n_dest_queue, int min_buffer)
+int mae_register_connection(unsigned int n_src_num, unsigned int n_src_queue, unsigned int n_dest_num, unsigned int n_dest_queue, int min_buffer)
 {
-	int	counter;
+	unsigned int	counter;
 	mae_driver_entry_t *drv_src = mae_find_driver(n_src_num);
 	mae_driver_entry_t *drv_dst = mae_find_driver(n_dest_num);
 	
@@ -377,7 +378,7 @@ int mae_register_connection(int n_src_num, int n_src_queue, int n_dest_num, int 
 }
 
 
-int mae_register_bus(int n_src_num, int src_bus, int n_dest_num, int dest_bus, int min_buffer)
+int mae_register_bus(unsigned int n_src_num, unsigned int src_bus, unsigned int n_dest_num, unsigned int dest_bus, int min_buffer)
 {
 	mae_driver_entry_t *drv_src = mae_find_driver(n_src_num);
 	mae_driver_entry_t *drv_dst = mae_find_driver(n_dest_num);
@@ -431,7 +432,7 @@ mae_queue_entry_t * mae_create_queue(mae_stream_descriptor_t *p_descriptor)
 	return p_qe;
 }
 
-int mae_add_input_queue(int driver_num, mae_queue_entry_t *queue)
+int mae_add_input_queue(unsigned int driver_num, mae_queue_entry_t *queue)
 {
 	mae_queue_entry_t **pp_iq;
 	mae_driver_entry_t	*p_driver = mae_find_driver(driver_num);
@@ -456,7 +457,7 @@ int mae_add_input_queue(int driver_num, mae_queue_entry_t *queue)
 	return 0;
 }
 
-int mae_add_output_queue(int driver_num, mae_queue_entry_t *queue)
+int mae_add_output_queue(unsigned int driver_num, mae_queue_entry_t *queue)
 {
 	mae_queue_entry_t **pp_oq;
 	mae_driver_entry_t	*p_driver = mae_find_driver(driver_num);
@@ -483,7 +484,7 @@ int mae_add_output_queue(int driver_num, mae_queue_entry_t *queue)
 
 
 
-mae_driver_entry_t *mae_find_driver(int driver_num)
+mae_driver_entry_t *mae_find_driver(unsigned int driver_num)
 {
 	mae_driver_entry_t	*p_drv = gp_mae_drivers;
 	while (p_drv)
@@ -500,7 +501,7 @@ mae_driver_entry_t *mae_find_driver(int driver_num)
 }
 
 
-void *mae_get_driver_state(int driver_num)
+void *mae_get_driver_state(unsigned int driver_num)
 {
 	void *result = 0;
 	// First - find the driver based on the driver's ID
@@ -512,7 +513,7 @@ void *mae_get_driver_state(int driver_num)
 	return result;
 }
 
-DRIVER_PROCESS *mae_get_driver_function(int driver_num)
+DRIVER_PROCESS *mae_get_driver_function(unsigned int driver_num)
 {
 	DRIVER_PROCESS *result = 0;
 	// First - find the driver based on the driver's ID
@@ -538,7 +539,7 @@ DRIVER_PROCESS *mae_get_driver_function(int driver_num)
 }
 
 
-int mae_count_input_queues(int driver_num)
+int mae_count_input_queues(unsigned int driver_num)
 {
 	int q_count = -1;
 	
@@ -557,7 +558,7 @@ int mae_count_input_queues(int driver_num)
 	return q_count;
 }
 
-int mae_count_output_queues(int driver_num)
+int mae_count_output_queues(unsigned int driver_num)
 {
 	int q_count = -1;
 	
@@ -576,7 +577,7 @@ int mae_count_output_queues(int driver_num)
 	return q_count;
 }
 
-mae_queue_entry_t *mae_get_input_queues(int driver_num)
+mae_queue_entry_t *mae_get_input_queues(unsigned int driver_num)
 {
 	mae_queue_entry_t *result = (mae_queue_entry_t *) 0;
 	
@@ -590,7 +591,7 @@ mae_queue_entry_t *mae_get_input_queues(int driver_num)
 	return result;
 }
 
-mae_queue_entry_t   *mae_get_output_queues(int driver_num)
+mae_queue_entry_t   *mae_get_output_queues(unsigned int driver_num)
 {
 	mae_queue_entry_t *result = (mae_queue_entry_t *) 0;
 	
@@ -604,7 +605,7 @@ mae_queue_entry_t   *mae_get_output_queues(int driver_num)
 	return result;
 }
 
-mae_queue_t *mae_get_input_queue(int driver_num, int queue_num)
+mae_queue_t *mae_get_input_queue(unsigned int driver_num, unsigned int queue_num)
 {
 	mae_queue_t *result = (mae_queue_t *) 0;
 	
@@ -624,7 +625,7 @@ mae_queue_t *mae_get_input_queue(int driver_num, int queue_num)
 	return result;
 }
 
-mae_queue_t *mae_get_output_queue(int driver_num, int queue_num)
+mae_queue_t *mae_get_output_queue(unsigned int driver_num, unsigned int queue_num)
 {
 	mae_queue_t *result = (mae_queue_t *) 0;
 	
@@ -649,7 +650,7 @@ int mae_register_block (block_descriptor_t *p_d)
 	return 0;
 }
 
-void mae_process_data(int block_id)
+void mae_process_data(unsigned int block_id)
 {
 }
 

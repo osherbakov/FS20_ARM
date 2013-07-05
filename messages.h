@@ -58,8 +58,8 @@ typedef enum {
 } mae_drivers_t;	
 
 typedef struct mae_parameter {
-	unsigned int value:24;
-	unsigned int number:8;
+	uint32_t value:24;
+	uint32_t number:8;
 } mae_parameter_t;
 
 #endif  /*__MESSAGES_H */

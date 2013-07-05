@@ -20,10 +20,10 @@
 // Driver and Module internal structures. Used only within MAXIM Audio Engine
 typedef struct mae_driver_entry
 {
-	uint32_t					drv_number;
-	DRIVER_PROCESS				*p_process;
-	void 						*p_state;
-	mae_queues_t				drv_queues;
+	uint32_t			drv_number;
+	DRIVER_PROCESS			*p_process;
+	void 				*p_state;
+	mae_queues_t			drv_queues;
 	struct mae_driver_entry 	*p_next;
 } mae_driver_entry_t;
 
@@ -39,11 +39,11 @@ extern mae_functions_table_t g_functions_table;
 extern mae_functions_table_t *gp_functions_table;  
 
 // The internal functions for the drivers/modules support
-extern mae_driver_entry_t *mae_find_driver(int driver_num);
-extern DRIVER_PROCESS *mae_get_driver_function(int driver_num);
+extern mae_driver_entry_t *mae_find_driver(unsigned int driver_num);
+extern DRIVER_PROCESS *mae_get_driver_function(unsigned int driver_num);
 extern int mae_count_msg_queue();
-extern void mae_get_message(int *msg, int *param1, int *param2);
-extern void mae_broadcast_unknown_message(int msg, int param1, int param2);
+extern void mae_get_message(uint16_t *msg, uint16_t *param1, uint32_t *param2);
+extern void mae_broadcast_unknown_message(uint16_t msg, uint16_t param1, uint32_t param2);
 
 
 //*****************************************************************************
