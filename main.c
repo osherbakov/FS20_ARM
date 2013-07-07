@@ -4,12 +4,14 @@
 extern void setup();
 extern void loop();
 
+volatile int doLoop = 1;
+
 int main()
 {
   
   setup();
   
-  while(1)
+  while(doLoop)
   {
     loop();
   }
