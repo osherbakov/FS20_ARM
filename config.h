@@ -19,8 +19,8 @@
 	(uint32_t)((0L << 24) | (((uint32_t)ID) << 16) | (((uint32_t)ID) << 8) | (0 << 0) )
 
 #define STD_DRIVER16(ID)\
-	(uint32_t)((0 << 24) | (0 << 16) | (0 << 8) | (1 << 0) ), \
-	(uint32_t)( ((ID) << 16) | ((ID) << 0) )
+	(uint32_t)((0L << 24) | (0L << 16) | (0 << 8) | (1 << 0) ), \
+	(uint32_t)( (((uint32_t)ID) << 16) | (((uint32_t)ID) << 0) )
 
 #define STD_MODULE8(ID)\
 	(uint32_t)((0L << 24) | (((uint32_t)ID) << 16) | (((uint32_t)ID) << 8) | (0 << 0) )
@@ -37,7 +37,7 @@
 
 #define NEW_DRIVER16(OLD_ID, NEW_ID)\
 	(uint32_t)((0L << 24) | (0L << 16) | (0 << 8) | (1 << 0) ), \
-	(uint32_t)( ((OLD_ID) << 16) | ((NEW_ID) << 0) )
+	(uint32_t)( (((uint32_t)OLD_ID) << 16) | (((uint32_t)NEW_ID) << 0) )
 
 #define NEW_MODULE16(OLD_ID, NEW_ID)\
 	(uint32_t)((0L << 24) | (0L << 16) | (0 << 8) | (1 << 0) ), \
@@ -67,10 +67,10 @@
 	(uint32_t)((0L << 24) | (0L << 16) | (1 << 8) | ((N) << 2) )
 
 #define PARAMS(N)\
-	(uint32_t)((0L << 24) | (0 << 16) | (2 << 8) | ((N) << 0) )
+	(uint32_t)((0L << 24) | (0L << 16) | (2 << 8) | ((N) << 0) )
 
 #define CONFIG(N)\
-	(uint32_t)((0L << 24) | (0 << 16) | (3 << 8) | ((N) << 0) )
+	(uint32_t)((0L << 24) | (0L << 16) | (3 << 8) | ((N) << 0) )
 
 #define PARAM(NUMBER, VALUE)\
 	(uint32_t)((((uint32_t)NUMBER) << 24) | ((VALUE) << 0) )
@@ -120,6 +120,9 @@
 
 #define END_DATA \
 	(uint32_t)(0)
+          
+#define END_DATA_AND_START \
+	(uint32_t)(0xFFFFFFFF)
 
 // Now define which version will be used by default
 

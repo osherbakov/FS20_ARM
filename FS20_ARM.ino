@@ -3,7 +3,7 @@
 #include "simple_gain_mod.h"
 #include "FlexSound20.h"
 
-char  __heap[4096];
+// char  __heap[4096];
 uint32_t config[] = 
 {
 	MODULE(0x50, &simple_gain_mod_process),
@@ -20,7 +20,7 @@ void setup()
 
 	mae_functions_table_t *p_ft = gp_functions_table;
 
-	p_ft->p_audio_engine_init(&__heap[0], 64);
+	p_ft->p_audio_engine_init(0, 64);
 
 	p_ft->p_audio_engine_config(&config[0]);
 	// Never returns from this function - stays in the loop.

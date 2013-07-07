@@ -163,7 +163,7 @@ void mae_post_message (unsigned int msg, unsigned int param1, uint32_t param2)
 //! \brief This function sends a specific message to all the drivers and modules 
 //! meaningit will require all drivers and modules to process that message. Eg of 
 //! such a message could be a MSG_INIT or MSG_START.
-static void mae_broadcast_specific_message(int msg)
+static void mae_broadcast_specific_message(uint16_t msg)
 {
 	mae_driver_entry_t *p_mae_drivers = gp_mae_drivers;
 	//First send the message to all drivers.

@@ -1,6 +1,9 @@
 
-#ifdef ARDUINO
-#else
+#ifndef ARDUINO
+
+extern void setup();
+extern void loop();
+
 int main()
 {
   

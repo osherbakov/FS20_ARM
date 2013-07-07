@@ -12,7 +12,10 @@
 #include "mxtos.h"
 #include "drivers.h"
 
+#ifndef MAX
 #define MAX(a,b) ((a) > (b)? (a) : (b))
+#endif
+
 
 //
 //  Defines to simplify the configuration data array parsing 

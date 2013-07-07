@@ -152,7 +152,7 @@ void mae_push_queue(mae_queue_t *p_queue, uint32_t data)
 		    diff = put_index - size;
 		    put_index = (diff < 0) ? put_index : diff;
 		    put_index_full = put_index + size;	// Special value for the index to 
-		    									//  mark the queue as full
+		    					//  mark the queue as full
 		    // Update all put pointers in the linked queues
 		    while(p_queue)
 		    {

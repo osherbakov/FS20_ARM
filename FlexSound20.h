@@ -31,7 +31,7 @@ EXTCDECL void		*FS_malloc(
 	uint32_t	alignment);
 // allocate n_bytes of memory with the starting address aligned on (2^ alignment) 
 // (1, 2, 4, 8, �) bytes boundary. The memory returned is filled with 0, 
-// so no calls to memset(�) are necessary.
+// so no calls to memset(...) are necessary.
 
 EXTCDECL int		FS_init();
 // the call to initialize the FlexSound processing environment.

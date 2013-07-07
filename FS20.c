@@ -5,11 +5,9 @@
 
 #define USE_CONFIG (1)
 
-#ifdef ARDUINO
-#else
-
-char  __heap[4096];
-int config[] = 
+#ifndef ARDUINO
+// char  __heap[4096];
+uint32_t config[] = 
 {
 	MODULE(0x50, &simple_gain_mod_process),
 	MODULE(0x51, &simple_gain_mod_process),

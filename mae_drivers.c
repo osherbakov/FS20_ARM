@@ -47,19 +47,19 @@ driver_descriptor_t *(g_mae_drivers[]) =
 
 
 // n_alignment  = 0 - 1-byte alignment
-//				= 1 - 2-byte (16-bit)
-//				= 2 - 4-byte (32-bit)
-//				= 3 - 8-byte (64-bit)
-//				= 4 - 16-byte (128-bit)
+//		= 1 - 2-byte (16-bit)
+//		= 2 - 4-byte (32-bit)
+//		= 3 - 8-byte (64-bit)
+//		= 4 - 16-byte (128-bit)
 void *mae_malloc (unsigned int n_size, unsigned int n_alignment)
 {
 	uint32_t n_mem_start = (uint32_t) gp_free_memory;
+	uint32_t mask = (1 << n_alignment) - 1;
 if(n_mem_start)
 {
 	uint32_t m_mem_next;
 	uint32_t *p_zero; 
-	uint32_t mask = (1 << n_alignment) - 1;
-	n_size = (n_size + mask) & ~ mask;
+	n_size = (n_size + mask) & ~mask;
 	n_mem_start = (n_mem_start + mask) & ~mask;
 	m_mem_next = n_mem_start + n_size;
 	gp_free_memory = (void *) m_mem_next;
@@ -72,10 +72,11 @@ if(n_mem_start)
 	}
 }else
 {
-  n_mem_start = (uint32_t) malloc(n_size);
-  memset((void *)n_mem_start, 0, n_size);
+  	n_size = (n_size + mask + mask) & ~mask;
+        n_mem_start = (uint32_t) malloc(n_size);
+	n_mem_start = (n_mem_start + mask) & ~mask;        
+        memset((void *)n_mem_start, 0, n_size);
 }
-
 	return (void *) n_mem_start;
 }
 

@@ -46,7 +46,7 @@ mae_functions_table_t g_functions_table =
         
         mae_post_message,
         mae_process_message,
-		mae_process_data,
+	mae_process_data,
 		
         mae_malloc,
         mae_get_free_mem_pointer,
@@ -55,8 +55,8 @@ mae_functions_table_t g_functions_table =
         mae_audio_engine_init,
         mae_audio_engine_start,
         mae_audio_engine_config,
-		mae_audio_engine_stop,
-		mae_audio_engine_close
+	mae_audio_engine_stop,
+	mae_audio_engine_close
 };
 
 // The pointer to the mae function table, so all the function calls may be patched..

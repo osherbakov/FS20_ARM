@@ -1,4 +1,4 @@
-/*=============================================================================
+/*============================================================================
 # 
 # The content of this file or document is CONFIDENTIAL and PROPRIETARY
 # to Maxim Integrated Products.  It is subject to the terms of a
