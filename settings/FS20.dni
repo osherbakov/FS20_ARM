@@ -48,14 +48,13 @@ ShowTimeSum=1
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Bp0=_ 1 "STD_CODE2" "{$PROJ_DIR$\FS20.c}.26.25" 0 0 1 "" 0 ""
-Count=1
+Count=0
 [Interrupts]
 Enabled=1
 [MemoryMap]
 Enabled=0
 Base=0
-UseAuto=0
+UseAuto=1
 TypeViolation=1
 UnspecRange=1
 ActionState=1
